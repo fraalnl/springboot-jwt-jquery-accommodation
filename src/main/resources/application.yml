@@ -1,0 +1,12 @@
+server:
+  port: 8082
+  error:
+    include-stacktrace: always
+    include-message: always
+
+spring:
+  profiles:
+    active: mysql
+  sql:
+    init:
+      mode: never
