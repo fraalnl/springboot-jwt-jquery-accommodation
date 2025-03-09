@@ -32,11 +32,15 @@ public class AuthController {
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(loginRequest.getUsername());
             if (passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {
                 // if the user has ROLE_ADMIN, assign admin; otherwise, student.
-                String role = "ROLE_STUDENT";
+                String role = "";
                 if (userDetails.getAuthorities().stream()
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
                     role = "ROLE_ADMIN";
+                } else {
+                    role = "ROLE_STUDENT";
                 }
+                System.out.println("Assigned role: " + role);
+
                 String token = jwtUtil.generateToken(userDetails.getUsername(), role);
                 return ResponseEntity.ok(Map.of("token", token));
             } else {

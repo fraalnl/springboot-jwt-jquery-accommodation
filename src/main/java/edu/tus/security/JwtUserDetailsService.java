@@ -31,8 +31,6 @@ public class JwtUserDetailsService implements UserDetailsService {
                     bcryptHashOfAdminPassword,
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
             );
-            boolean match = new BCryptPasswordEncoder().matches("admin123", bcryptHashOfAdminPassword);
-            System.out.println("Password match: " + match);
             return securityUser;
         } else {
             Optional<StudentEntity> userOpt = userRepository.findByUsername(username);

@@ -43,9 +43,7 @@ $(document).ready(function() {
     $.ajax({
       url: baseURL + "/api/accommodation/rooms",
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       success: function(rooms) {
         console.log("Rooms loaded:", rooms);
         populateRoomsTable(rooms);
@@ -56,8 +54,10 @@ $(document).ready(function() {
     });
   }
 
-  // Populate DataTable with selected room fields
-  function populateRoomsTable(rooms) {
+    function populateRoomsTable(response) {
+    // If response contains _embedded, extract the rooms array
+    const rooms = response._embedded ? response._embedded.roomList : response;
+    
     if ($.fn.DataTable.isDataTable('#roomsTable')) {
       $('#roomsTable').DataTable().destroy();
     }
@@ -70,14 +70,14 @@ $(document).ready(function() {
         actions += ` <button class="btn btn-danger btn-sm deleteRoomBtn" data-id="${room.id}">Delete</button>`;
       }
       const row = `<tr>
-                    <td>${room.name}</td>
-                    <td>${room.address}</td>
-                    <td>${room.distance}</td>
-                    <td>${room.roomType}</td>
-                    <td>${room.durationStay}</td>
-                    <td>${room.rent}</td>
-                    <td>${actions}</td>
-                  </tr>`;
+                      <td>${room.name}</td>
+                      <td>${room.address}</td>
+                      <td>${room.distance}</td>
+                      <td>${room.roomType}</td>
+                      <td>${room.durationStay}</td>
+                      <td>${room.rent}</td>
+                      <td>${actions}</td>
+                   </tr>`;
       tbody.append(row);
     });
     roomsTable = $('#roomsTable').DataTable();
@@ -104,20 +104,18 @@ $(document).ready(function() {
         $("#detailRoomBills").text(room.bills);
         $("#detailRoomGenderPreference").text(room.genderPreference);
         $("#detailRoomAdditionalMessage").text(room.addMessage);
-		// For image 1:
-		if (room.images && room.images.length >= 1 && room.images[0].imageUrl) {
-		  $("#detailRoomImage1").attr("src", "/images/" + room.images[0].imageUrl).show();
-		} else {
-		  $("#detailRoomImage1").hide();
-		}
-
-		// For image 2:
-		if (room.images && room.images.length >= 2 && room.images[1].imageUrl) {
-		  $("#detailRoomImage2").attr("src", "/images/" + room.images[1].imageUrl).show();
-		} else {
-		  $("#detailRoomImage2").hide();
-		}
-
+        
+        // Update two images side by side using the images array from room.
+        if (room.images && room.images.length >= 1 && room.images[0].imageUrl) {
+          $("#detailRoomImage1").attr("src", "/images/" + room.images[0].imageUrl).show();
+        } else {
+          $("#detailRoomImage1").hide();
+        }
+        if (room.images && room.images.length >= 2 && room.images[1].imageUrl) {
+          $("#detailRoomImage2").attr("src", "/images/" + room.images[1].imageUrl).show();
+        } else {
+          $("#detailRoomImage2").hide();
+        }
         $("#viewRoomModal").modal("show");
       },
       error: function() {
@@ -132,7 +130,7 @@ $(document).ready(function() {
     $("#addRoomModal").modal("show");
   });
 
-  // Handle Add Room form submission
+  // Handle Add Room form submission (using camelCase keys)
   $("#addRoomForm").on("submit", function(e) {
     e.preventDefault();
     const roomData = {
@@ -142,13 +140,12 @@ $(document).ready(function() {
       address: $("#roomAddress").val(),
       eircode: $("#roomEircode").val(),
       distance: parseFloat($("#roomDistance").val()),
-      room_type: $("#roomType").val(),
-      duration_stay: $("#roomDurationStay").val(),
+      roomType: $("#roomType").val(),
+      durationStay: $("#roomDurationStay").val(),
       rent: parseFloat($("#roomRent").val()),
       bills: $("#roomBills").val(),
-      gender_preference: $("#roomGenderPreference").val(),
-      add_message: $("#roomAdditionalMessage").val(),
-      // For Add Room, you may want to enter images as a comma-separated list too:
+      genderPreference: $("#roomGenderPreference").val(),
+      addMessage: $("#roomAdditionalMessage").val(),
       images: $("#roomImage").val().split(",").map(s => s.trim()).filter(s => s !== "")
     };
     $.ajax({
@@ -202,11 +199,10 @@ $(document).ready(function() {
     });
   });
 
-  // Handle Update Room form submission
+  // Handle Update Room form submission (using camelCase keys)
   $("#updateRoomForm").on("submit", function(e) {
     e.preventDefault();
     const roomId = $("#updateRoomId").val();
-    // Convert comma-separated images string to an array
     const imagesString = $("#updateRoomImage").val();
     const imagesArray = imagesString.split(",").map(s => s.trim()).filter(s => s !== "");
 
