@@ -1,5 +1,7 @@
 package edu.tus.dto;
 
+import java.util.List;
+
 public class RoomDto {
     private String name;
     private String email;
@@ -13,7 +15,7 @@ public class RoomDto {
     private String bills;
     private String genderPreference;
     private String addMessage;
-    private String image;
+    private List<String> images;
 
     public String getName() {
         return name;
@@ -87,11 +89,11 @@ public class RoomDto {
     public void setAddMessage(String addMessage) {
         this.addMessage = addMessage;
     }
-    public String getImage() {
-        return image;
-    }
-    public void setImage(String image) {
-        this.image = image;
-    }
+	public List<String> getImages() {
+		return images;
+	}
+	public void setImages(List<String> images) {
+		this.images = images;
+	}
 }
 

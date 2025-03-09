@@ -19,9 +19,8 @@ $(document).ready(function() {
       success: function(response) {
         // Clear any previous error message
         $("#loginError").addClass("d-none").html('');
-        
         token = response.token;
-        // For demo purposes: if username is 'admin', then assign admin role; otherwise, student.
+        // For demo purposes: if username is 'admin', assign admin role; else, student.
         userRole = (username.toLowerCase() === 'admin') ? 'ADMIN' : 'STUDENT';
         $("#loginSection").hide();
         $("#dashboardSection").removeClass("d-none").removeClass("hidden");
@@ -32,14 +31,12 @@ $(document).ready(function() {
         loadRooms();
       },
       error: function(xhr) {
-        // Display a Bootstrap alert with an error message
         $("#loginError")
           .removeClass("d-none")
           .html('<strong>Error:</strong> ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Invalid credentials. Please try again.'));
       }
     });
   });
-
 
   // Load rooms from backend
   function loadRooms() {
@@ -50,6 +47,7 @@ $(document).ready(function() {
         "Authorization": "Bearer " + token
       },
       success: function(rooms) {
+        console.log("Rooms loaded:", rooms);
         populateRoomsTable(rooms);
       },
       error: function() {
@@ -58,7 +56,7 @@ $(document).ready(function() {
     });
   }
 
-  // Populate DataTable with selected room fields (modern borderless style)
+  // Populate DataTable with selected room fields
   function populateRoomsTable(rooms) {
     if ($.fn.DataTable.isDataTable('#roomsTable')) {
       $('#roomsTable').DataTable().destroy();
@@ -66,9 +64,7 @@ $(document).ready(function() {
     const tbody = $("#roomsTable tbody");
     tbody.empty();
     rooms.forEach(function(room) {
-      // Always include the View button.
       let actions = `<button class="btn btn-info btn-sm viewRoomBtn" data-id="${room.id}">View</button>`;
-      // Only for admin: include Edit and Delete buttons.
       if (userRole === 'ADMIN') {
         actions += ` <button class="btn btn-primary btn-sm updateRoomBtn" data-id="${room.id}">Edit</button>`;
         actions += ` <button class="btn btn-danger btn-sm deleteRoomBtn" data-id="${room.id}">Delete</button>`;
@@ -76,6 +72,7 @@ $(document).ready(function() {
       const row = `<tr>
                     <td>${room.name}</td>
                     <td>${room.address}</td>
+                    <td>${room.distance}</td>
                     <td>${room.roomType}</td>
                     <td>${room.durationStay}</td>
                     <td>${room.rent}</td>
@@ -92,10 +89,9 @@ $(document).ready(function() {
     $.ajax({
       url: baseURL + "/api/accommodation/rooms/" + roomId,
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       success: function(room) {
+        console.log("Room details:", room);
         $("#detailRoomName").text(room.name);
         $("#detailRoomEmail").text(room.email);
         $("#detailRoomPhone").text(room.phone);
@@ -108,7 +104,20 @@ $(document).ready(function() {
         $("#detailRoomBills").text(room.bills);
         $("#detailRoomGenderPreference").text(room.genderPreference);
         $("#detailRoomAdditionalMessage").text(room.addMessage);
-        $("#detailRoomImage").attr("src", "images/" + room.image);
+		// For image 1:
+		if (room.images && room.images.length >= 1 && room.images[0].imageUrl) {
+		  $("#detailRoomImage1").attr("src", "/images/" + room.images[0].imageUrl).show();
+		} else {
+		  $("#detailRoomImage1").hide();
+		}
+
+		// For image 2:
+		if (room.images && room.images.length >= 2 && room.images[1].imageUrl) {
+		  $("#detailRoomImage2").attr("src", "/images/" + room.images[1].imageUrl).show();
+		} else {
+		  $("#detailRoomImage2").hide();
+		}
+
         $("#viewRoomModal").modal("show");
       },
       error: function() {
@@ -139,15 +148,14 @@ $(document).ready(function() {
       bills: $("#roomBills").val(),
       gender_preference: $("#roomGenderPreference").val(),
       add_message: $("#roomAdditionalMessage").val(),
-      image: $("#roomImage").val()
+      // For Add Room, you may want to enter images as a comma-separated list too:
+      images: $("#roomImage").val().split(",").map(s => s.trim()).filter(s => s !== "")
     };
     $.ajax({
       url: baseURL + "/api/accommodation/rooms",
       method: "POST",
       contentType: "application/json",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       data: JSON.stringify(roomData),
       success: function() {
         $("#addRoomModal").modal("hide");
@@ -165,9 +173,7 @@ $(document).ready(function() {
     $.ajax({
       url: baseURL + "/api/accommodation/rooms/" + roomId,
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       success: function(room) {
         $("#updateRoomId").val(room.id);
         $("#updateRoomName").val(room.name);
@@ -182,7 +188,12 @@ $(document).ready(function() {
         $("#updateRoomBills").val(room.bills);
         $("#updateRoomGenderPreference").val(room.genderPreference);
         $("#updateRoomAdditionalMessage").val(room.addMessage);
-        $("#updateRoomImage").val(room.image);
+        // Pre-fill the images field with a comma-separated list of image URLs
+        if (room.images && room.images.length > 0) {
+          $("#updateRoomImage").val(room.images.map(img => img.imageUrl).join(", "));
+        } else {
+          $("#updateRoomImage").val("");
+        }
         $("#updateRoomModal").modal("show");
       },
       error: function() {
@@ -195,6 +206,10 @@ $(document).ready(function() {
   $("#updateRoomForm").on("submit", function(e) {
     e.preventDefault();
     const roomId = $("#updateRoomId").val();
+    // Convert comma-separated images string to an array
+    const imagesString = $("#updateRoomImage").val();
+    const imagesArray = imagesString.split(",").map(s => s.trim()).filter(s => s !== "");
+
     const roomData = {
       name: $("#updateRoomName").val(),
       email: $("#updateRoomEmail").val(),
@@ -208,15 +223,14 @@ $(document).ready(function() {
       bills: $("#updateRoomBills").val(),
       genderPreference: $("#updateRoomGenderPreference").val(),
       addMessage: $("#updateRoomAdditionalMessage").val(),
-      image: $("#updateRoomImage").val()
+      images: imagesArray
     };
+
     $.ajax({
       url: baseURL + "/api/accommodation/rooms/" + roomId,
       method: "PUT",
       contentType: "application/json",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       data: JSON.stringify(roomData),
       success: function() {
         $("#updateRoomModal").modal("hide");
@@ -240,9 +254,7 @@ $(document).ready(function() {
       $.ajax({
         url: baseURL + "/api/accommodation/rooms/" + selectedRoomId,
         method: "DELETE",
-        headers: {
-          "Authorization": "Bearer " + token
-        },
+        headers: { "Authorization": "Bearer " + token },
         success: function() {
           $("#deleteRoomModal").modal("hide");
           loadRooms();
@@ -273,9 +285,7 @@ $(document).ready(function() {
       url: baseURL + "/api/accommodation/students",
       method: "POST",
       contentType: "application/json",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       data: JSON.stringify(studentData),
       success: function(response) {
         alert(response.message);

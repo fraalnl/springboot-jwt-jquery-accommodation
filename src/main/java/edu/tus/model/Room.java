@@ -1,5 +1,10 @@
 package edu.tus.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -26,7 +31,10 @@ public class Room {
     private String genderPreference;
     @Column(name = "add_message")
     private String addMessage;
-    private String image;
+    // one room can have multiple images
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference  //for lazy-loaded collections, JSON serialization
+    private List<RoomImage> images = new ArrayList<>();
 
     public Room() {}
 
@@ -134,11 +142,11 @@ public class Room {
 		this.addMessage = addMessage;
 	}
 
-	public String getImage() {
-		return image;
+	public List<RoomImage> getImages() {
+		return images;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setImages(List<RoomImage> images) {
+		this.images = images;
 	}
 }  

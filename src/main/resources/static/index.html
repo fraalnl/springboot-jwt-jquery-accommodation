@@ -1,414 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>TUS Accommodation Platform</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-  <style>
-    body {
-      padding-top: 70px;
-      background-color: #f8f9fa;
-    }
-    .hidden {
-      display: none;
-    }
-    /* Center the login card */
-    #loginSection {
-      max-width: 400px;
-      margin: 50px auto;
-    }
-    /* Navbar style (modern dark navy similar to TUS) */
-    .navbar {
-      background-color: #002b5c !important;
-    }
-    /* Modern table: borderless with subtle stripes */
-    .table-borderless td, .table-borderless th {
-      border: none !important;
-    }
-    .card {
-      margin-bottom: 20px;
-    }
-  </style>
+	<meta charset="UTF-8">
+	<title>TUS Accommodation Portal</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+	<style>
+		body {
+			padding-top: 70px;
+			background-color: #f8f9fa;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		/* Center the login card */
+		#loginSection {
+			max-width: 400px;
+			margin: 50px auto;
+		}
+
+		/* Navbar style (modern dark navy similar to TUS) */
+		.navbar {
+			background-color: #002b5c !important;
+		}
+
+		/* Modern table: borderless with subtle stripes */
+		.table-borderless td,
+		.table-borderless th {
+			border: none !important;
+		}
+
+		.card {
+			margin-bottom: 20px;
+		}
+	</style>
 </head>
+
 <body>
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <a class="navbar-brand" href="#">TUS Accommodation Platform</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ml-auto">
-        <!-- Logout button; initially hidden -->
-        <li class="nav-item">
-          <button id="logoutBtn" class="btn btn-outline-light hidden">Logout</button>
-        </li>
-      </ul>
-    </div>
-  </nav>
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+		<a class="navbar-brand" href="#">Accommodation Portal   |   Technological University of the Shannon (Athlone
+			Campus)</a>
+		<div class="collapse navbar-collapse">
+			<ul class="navbar-nav ml-auto">
+				<!-- Logout button; initially hidden -->
+				<li class="nav-item">
+					<button id="logoutBtn" class="btn btn-outline-light hidden">Logout</button>
+				</li>
+			</ul>
+		</div>
+	</nav>
 
-  <!-- Login Section -->
-  <div id="loginSection" class="container">
-    <div class="card shadow">
-      <div class="card-header text-center">
-        <h3>Log In</h3>
-      </div>
-      <div class="card-body">
-        <!-- Error message container (initially hidden) -->
-        <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter username" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" required>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Log In</button>
-        </form>
-      </div>
-    </div>
-  </div>
+	<!-- Login Section -->
+	<div id="loginSection" class="container">
+		<div class="card shadow">
+			<div class="card-header text-center">
+				<h3>Log In</h3>
+			</div>
+			<div class="card-body">
+				<!-- Error message container (initially hidden) -->
+				<div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+				<form id="loginForm">
+					<div class="form-group">
+						<label for="username">Username</label>
+						<input type="text" class="form-control" id="username" placeholder="Enter username" required>
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" class="form-control" id="password" placeholder="Enter password" required>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Log In</button>
+				</form>
+			</div>
+		</div>
+	</div>
 
-  <!-- Dashboard Section -->
-  <div id="dashboardSection" class="container hidden">
-    <div class="mb-3">
-      <!-- Admin-only actions -->
-      <div id="adminActions" class="mb-3 hidden">
-        <button id="createStudentBtn" class="btn btn-secondary">Create Student Account</button>
-        <button id="addRoomBtn" class="btn btn-success">Add Room</button>
-      </div>
-      <!-- Rooms Table -->
-      <div class="card">
-        <div class="card-header">
-          <h4>Rooms List</h4>
-        </div>
-        <div class="card-body">
-          <table id="roomsTable" class="table table-borderless table-striped" style="width:100%">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Room Type</th>
-                <th>Duration Stay</th>
-                <th>Rent</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Populated via JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+	<!-- Dashboard Section -->
+	<div id="dashboardSection" class="container hidden">
+		<div class="mb-3">
+			<!-- Admin-only actions -->
+			<div id="adminActions" class="mb-3 hidden">
+				<button id="createStudentBtn" class="btn btn-secondary">Create Student Account</button>
+				<button id="addRoomBtn" class="btn btn-success">Add Room</button>
+			</div>
+			<!-- Rooms Table -->
+			<div class="card">
+				<div class="card-header">
+					<h4>Rooms List</h4>
+				</div>
+				<div class="card-body">
+					<table id="roomsTable" class="table table-borderless table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Address</th>
+								<th>Distance(km)</th>
+								<th>Room Type</th>
+								<th>Duration of Stay</th>
+								<th>Monthly Rent(€)</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Populated via JavaScript -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <!-- Logout Confirmation Modal -->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-             <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-           Are you sure you want to logout?
-        </div>
-        <div class="modal-footer">
-           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-           <button id="confirmLogoutBtn" type="button" class="btn btn-danger">Logout</button>
-        </div>
-      </div>
-    </div>
-  </div>
+	<!-- Logout Confirmation Modal -->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Are you sure you want to logout?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button id="confirmLogoutBtn" type="button" class="btn btn-danger">Logout</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <!-- Modals for Create Student, Add Room, Update Room, View Room, Delete Confirmation -->
-  <!-- (Create Student Modal) -->
-  <div class="modal fade" id="createStudentModal" tabindex="-1" role="dialog" aria-labelledby="createStudentModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form id="createStudentForm">
-          <div class="modal-header">
-            <h5 class="modal-title" id="createStudentModalLabel">Create Student Account</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <label for="studentUsername">Username</label>
-              <input type="text" class="form-control" id="studentUsername" required>
-            </div>
-            <div class="form-group">
-              <label for="studentEmail">Email</label>
-              <input type="email" class="form-control" id="studentEmail" required>
-            </div>
-            <div class="form-group">
-              <label for="studentName">Name</label>
-              <input type="text" class="form-control" id="studentName" required>
-            </div>
-            <div class="form-group">
-              <label for="studentPassword">Password</label>
-              <input type="password" class="form-control" id="studentPassword" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Create Account</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<!-- Modals for Create Student, Add Room, Update Room, View Room, Delete Confirmation -->
+	<!-- (Create Student Modal) -->
+	<div class="modal fade" id="createStudentModal" tabindex="-1" role="dialog"
+		aria-labelledby="createStudentModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form id="createStudentForm">
+					<div class="modal-header">
+						<h5 class="modal-title" id="createStudentModalLabel">Create Student Account</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="studentUsername">Username</label>
+							<input type="text" class="form-control" id="studentUsername" required>
+						</div>
+						<div class="form-group">
+							<label for="studentEmail">Email</label>
+							<input type="email" class="form-control" id="studentEmail" required>
+						</div>
+						<div class="form-group">
+							<label for="studentName">Name</label>
+							<input type="text" class="form-control" id="studentName" required>
+						</div>
+						<div class="form-group">
+							<label for="studentPassword">Password</label>
+							<input type="password" class="form-control" id="studentPassword" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Create Account</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-  <!-- (Add Room Modal) -->
-  <div class="modal fade" id="addRoomModal" tabindex="-1" role="dialog" aria-labelledby="addRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form id="addRoomForm">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addRoomModalLabel">Add Room</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Room Basic Info -->
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="roomName">Name</label>
-                <input type="text" class="form-control" id="roomName" required>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="roomType">Room Type</label>
-                <input type="text" class="form-control" id="roomType" required>
-              </div>
-            </div>
-            <!-- Contact & Location -->
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="roomEmail">Email</label>
-                <input type="email" class="form-control" id="roomEmail" required>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="roomPhone">Phone</label>
-                <input type="text" class="form-control" id="roomPhone" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="roomAddress">Address</label>
-              <input type="text" class="form-control" id="roomAddress" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <label for="roomEircode">Eircode</label>
-                <input type="text" class="form-control" id="roomEircode">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="roomDistance">Distance (km)</label>
-                <input type="number" step="0.1" class="form-control" id="roomDistance">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="roomDurationStay">Duration Stay</label>
-                <input type="text" class="form-control" id="roomDurationStay">
-              </div>
-            </div>
-            <!-- Financial & Other Details -->
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <label for="roomRent">Rent</label>
-                <input type="number" class="form-control" id="roomRent" required>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="roomBills">Bills</label>
-                <input type="text" class="form-control" id="roomBills">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="roomGenderPreference">Gender Preference</label>
-                <input type="text" class="form-control" id="roomGenderPreference">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="roomAdditionalMessage">Additional Message</label>
-              <textarea class="form-control" id="roomAdditionalMessage"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="roomImage">Image URL</label>
-              <input type="text" class="form-control" id="roomImage">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Add Room</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<!-- (Add Room Modal) -->
+	<div class="modal fade" id="addRoomModal" tabindex="-1" role="dialog" aria-labelledby="addRoomModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<form id="addRoomForm">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addRoomModalLabel">Add Room</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!-- Room Basic Info -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="roomName">Name</label>
+								<input type="text" class="form-control" id="roomName" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="roomType">Room Type</label>
+								<input type="text" class="form-control" id="roomType" required>
+							</div>
+						</div>
+						<!-- Contact & Location -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="roomEmail">Email</label>
+								<input type="email" class="form-control" id="roomEmail" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="roomPhone">Phone</label>
+								<input type="text" class="form-control" id="roomPhone" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="roomAddress">Address</label>
+							<input type="text" class="form-control" id="roomAddress" required>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="roomEircode">Eircode</label>
+								<input type="text" class="form-control" id="roomEircode">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="roomDistance">Distance (km)</label>
+								<input type="number" step="0.1" class="form-control" id="roomDistance">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="roomDurationStay">Duration of Stay</label>
+								<input type="text" class="form-control" id="roomDurationStay">
+							</div>
+						</div>
+						<!-- Financial & Other Details -->
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="roomRent">Monthly Rent(€)</label>
+								<input type="number" class="form-control" id="roomRent" required>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="roomBills">Bills</label>
+								<input type="text" class="form-control" id="roomBills">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="roomGenderPreference">Gender Preference</label>
+								<input type="text" class="form-control" id="roomGenderPreference">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="roomAdditionalMessage">Additional Message</label>
+							<textarea class="form-control" id="roomAdditionalMessage"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="roomImage">Image URL</label>
+							<input type="text" class="form-control" id="roomImage">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-success">Add Room</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-  <!-- (Update Room Modal) -->
-  <div class="modal fade" id="updateRoomModal" tabindex="-1" role="dialog" aria-labelledby="updateRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form id="updateRoomForm">
-          <div class="modal-header">
-            <h5 class="modal-title" id="updateRoomModalLabel">Update Room</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Hidden field for room ID -->
-            <input type="hidden" id="updateRoomId">
-            <!-- Room Basic Info -->
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="updateRoomName">Name</label>
-                <input type="text" class="form-control" id="updateRoomName" required>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="updateRoomType">Room Type</label>
-                <input type="text" class="form-control" id="updateRoomType" required>
-              </div>
-            </div>
-            <!-- Contact & Location -->
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="updateRoomEmail">Email</label>
-                <input type="email" class="form-control" id="updateRoomEmail" required>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="updateRoomPhone">Phone</label>
-                <input type="text" class="form-control" id="updateRoomPhone" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="updateRoomAddress">Address</label>
-              <input type="text" class="form-control" id="updateRoomAddress" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <label for="updateRoomEircode">Eircode</label>
-                <input type="text" class="form-control" id="updateRoomEircode">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="updateRoomDistance">Distance (km)</label>
-                <input type="number" step="0.1" class="form-control" id="updateRoomDistance">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="updateRoomDurationStay">Duration Stay</label>
-                <input type="text" class="form-control" id="updateRoomDurationStay">
-              </div>
-            </div>
-            <!-- Financial & Other Details -->
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <label for="updateRoomRent">Rent</label>
-                <input type="number" class="form-control" id="updateRoomRent" required>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="updateRoomBills">Bills</label>
-                <input type="text" class="form-control" id="updateRoomBills">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="updateRoomGenderPreference">Gender Preference</label>
-                <input type="text" class="form-control" id="updateRoomGenderPreference">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="updateRoomAdditionalMessage">Additional Message</label>
-              <textarea class="form-control" id="updateRoomAdditionalMessage"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="updateRoomImage">Image URL</label>
-              <input type="text" class="form-control" id="updateRoomImage">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Update Room</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<!-- (Update Room Modal) -->
+	<div class="modal fade" id="updateRoomModal" tabindex="-1" role="dialog" aria-labelledby="updateRoomModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<form id="updateRoomForm">
+					<div class="modal-header">
+						<h5 class="modal-title" id="updateRoomModalLabel">Update Room</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!-- Hidden field for room ID -->
+						<input type="hidden" id="updateRoomId">
+						<!-- Room Basic Info -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="updateRoomName">Name</label>
+								<input type="text" class="form-control" id="updateRoomName" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="updateRoomType">Room Type</label>
+								<input type="text" class="form-control" id="updateRoomType" required>
+							</div>
+						</div>
+						<!-- Contact & Location -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="updateRoomEmail">Email</label>
+								<input type="email" class="form-control" id="updateRoomEmail" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="updateRoomPhone">Phone</label>
+								<input type="text" class="form-control" id="updateRoomPhone" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="updateRoomAddress">Address</label>
+							<input type="text" class="form-control" id="updateRoomAddress" required>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="updateRoomEircode">Eircode</label>
+								<input type="text" class="form-control" id="updateRoomEircode">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="updateRoomDistance">Distance (km)</label>
+								<input type="number" step="0.1" class="form-control" id="updateRoomDistance">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="updateRoomDurationStay">Duration of Stay</label>
+								<input type="text" class="form-control" id="updateRoomDurationStay">
+							</div>
+						</div>
+						<!-- Financial & Other Details -->
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="updateRoomRent">Monthly Rent(€)</label>
+								<input type="number" class="form-control" id="updateRoomRent" required>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="updateRoomBills">Bills</label>
+								<input type="text" class="form-control" id="updateRoomBills">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="updateRoomGenderPreference">Gender Preference</label>
+								<input type="text" class="form-control" id="updateRoomGenderPreference">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="updateRoomAdditionalMessage">Additional Message</label>
+							<textarea class="form-control" id="updateRoomAdditionalMessage"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="updateRoomImage">Image URL</label>
+							<input type="text" class="form-control" id="updateRoomImage">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Update Room</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-  <!-- View Room Details Modal -->
-  <div class="modal fade" id="viewRoomModal" tabindex="-1" role="dialog" aria-labelledby="viewRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content border-0">
-        <div class="modal-header border-0">
-          <h5 class="modal-title" id="viewRoomModalLabel">Room Details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <!-- Two columns for text details with 6 items each -->
-            <div class="row">
-              <div class="col-md-6">
-                <p><strong>Name:</strong> <span id="detailRoomName"></span></p>
-                <p><strong>Email:</strong> <span id="detailRoomEmail"></span></p>
-                <p><strong>Phone:</strong> <span id="detailRoomPhone"></span></p>
-                <p><strong>Address:</strong> <span id="detailRoomAddress"></span></p>
-                <p><strong>Eircode:</strong> <span id="detailRoomEircode"></span></p>
-                <p><strong>Room Type:</strong> <span id="detailRoomType"></span></p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Distance:</strong> <span id="detailRoomDistance"></span> km</p>
-                <p><strong>Duration Stay:</strong> <span id="detailRoomDurationStay"></span></p>
-                <p><strong>Rent:</strong> $<span id="detailRoomRent"></span></p>
-                <p><strong>Bills:</strong> <span id="detailRoomBills"></span></p>
-                <p><strong>Gender Preference:</strong> <span id="detailRoomGenderPreference"></span></p>
-                <p><strong>Additional Message:</strong> <span id="detailRoomAdditionalMessage"></span></p>
-              </div>
-            </div>
-            <!-- Image row below the details -->
-            <div class="row mt-3">
-              <div class="col text-center">
-                <img id="detailRoomImage" alt="Room Image" class="img-fluid rounded" style="max-height: 300px;">
-              </div>
-            </div>
-          </div>  
-        </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+	<!-- View Room Details Modal -->
+	<div class="modal fade" id="viewRoomModal" tabindex="-1" role="dialog" aria-labelledby="viewRoomModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content border-0">
+				<div class="modal-header border-0">
+					<h5 class="modal-title" id="viewRoomModalLabel">Room Details</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<!-- Two columns for text details (6 items each) -->
+						<div class="row">
+							<div class="col-md-6">
+								<p><strong>Name:</strong> <span id="detailRoomName"></span></p>
+								<p><strong>Email:</strong> <span id="detailRoomEmail"></span></p>
+								<p><strong>Phone:</strong> <span id="detailRoomPhone"></span></p>
+								<p><strong>Address:</strong> <span id="detailRoomAddress"></span></p>
+								<p><strong>Eircode:</strong> <span id="detailRoomEircode"></span></p>
+								<p><strong>Room Type:</strong> <span id="detailRoomType"></span></p>
+							</div>
+							<div class="col-md-6">
+								<p><strong>Distance from TUS:</strong> <span id="detailRoomDistance"></span> km</p>
+								<p><strong>Duration of Stay:</strong> <span id="detailRoomDurationStay"></span></p>
+								<p><strong>Monthly Rent:</strong> €<span id="detailRoomRent"></span></p>
+								<p><strong>Bills:</strong> <span id="detailRoomBills"></span></p>
+								<p><strong>Gender Preference:</strong> <span id="detailRoomGenderPreference"></span></p>
+								<p><strong>Additional Message:</strong> <span id="detailRoomAdditionalMessage"></span>
+								</p>
+							</div>
+						</div>
+						<!-- Row for images: two images side by side -->
+						<div class="row mt-3">
+							<div class="col-md-6 text-center">
+								<img id="detailRoomImage1" alt="Room Image 1" class="img-fluid rounded"
+									style="width: 100%; height: 300px; object-fit: cover;">
+							</div>
+							<div class="col-md-6 text-center">
+								<img id="detailRoomImage2" alt="Room Image 2" class="img-fluid rounded"
+									style="width: 100%; height: 300px; object-fit: cover;">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer border-0">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <!-- (Delete Confirmation Modal) -->
-  <div class="modal fade" id="deleteRoomModal" tabindex="-1" role="dialog" aria-labelledby="deleteRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteRoomModalLabel">Confirm Deletion</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to delete this room?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button id="confirmDeleteRoomBtn" type="button" class="btn btn-danger">Delete</button>
-          </div>
-      </div>
-    </div>
-  </div>
+	<!-- (Delete Confirmation Modal) -->
+	<div class="modal fade" id="deleteRoomModal" tabindex="-1" role="dialog" aria-labelledby="deleteRoomModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteRoomModalLabel">Confirm Deletion</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Are you sure you want to delete this room?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button id="confirmDeleteRoomBtn" type="button" class="btn btn-danger">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <!-- jQuery, DataTables and Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <!-- Custom JS -->
-  <script src="app.js"></script>
+	<!-- jQuery, DataTables and Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Custom JS -->
+	<script src="/app.js"></script>
 </body>
+
 </html>
