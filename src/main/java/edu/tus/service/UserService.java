@@ -23,13 +23,12 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
-    /**
-     * Creates a student account with role "STUDENT" and returns a JWT token.
-     */
+	//Creates a student account and returns a JWT token
     public String createStudent(final StudentDto dto) {
         StudentEntity user = new StudentEntity();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
+        // Hash Passwords Before Storing in the Database
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole("ROLE_STUDENT");
 

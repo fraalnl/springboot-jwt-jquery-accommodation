@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
@@ -18,7 +17,7 @@ public class AuthController {
 
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; //PasswordEncoder is part of Spring Security
 
     public AuthController(JwtUserDetailsService jwtUserDetailsService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.jwtUserDetailsService = jwtUserDetailsService;
@@ -39,15 +38,13 @@ public class AuthController {
                 } else {
                     role = "ROLE_STUDENT";
                 }
-                System.out.println("Assigned role: " + role);
-
                 String token = jwtUtil.generateToken(userDetails.getUsername(), role);
                 return ResponseEntity.ok(Map.of("token", token));
-            } else {
+            } else {//If the password doesn’t match, it returns an HTTP 401 (Unauthorized) response
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "Invalid credentials. Please try again."));
             }
-        } catch (UsernameNotFoundException e) {
+        } catch (UsernameNotFoundException e) { //If the username does not exist
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid credentials. Please try again."));
         }

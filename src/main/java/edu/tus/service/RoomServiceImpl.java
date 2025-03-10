@@ -6,7 +6,6 @@ import edu.tus.model.RoomImage;
 import edu.tus.dao.RoomRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -56,7 +55,6 @@ public class RoomServiceImpl implements RoomService {
 		room.setBills(roomDto.getBills());
 		room.setGenderPreference(roomDto.getGenderPreference());
 		room.setAddMessage(roomDto.getAddMessage());
-
 		// Convert image URLs to RoomImage entities
 		room.setImages(convertImageUrlsToRoomImages(room, roomDto.getImages()));
 
@@ -82,7 +80,7 @@ public class RoomServiceImpl implements RoomService {
 	        room.setGenderPreference(roomDto.getGenderPreference());
 	        room.setAddMessage(roomDto.getAddMessage());
 
-	        // **Preserve Images if None are Sent in the Update**
+	        // Preserve Images if None are Sent in the Update
 	        if (roomDto.getImages() != null && !roomDto.getImages().isEmpty()) {
 	            updateRoomImages(room, roomDto.getImages()); // Update images if provided
 	        }
@@ -94,13 +92,16 @@ public class RoomServiceImpl implements RoomService {
 	    }
 	}
 
+	//If an error occurs after some images are deleted but before new images are added, the room could end up missing some images.
+	//with @Transactional: all changes are rolled back, and the room's images remain unchanged
 	@Transactional
 	private void updateRoomImages(Room room, List<String> newImageUrls) {
 		if (newImageUrls == null) {
-			newImageUrls = new ArrayList<>(); // Ensure it's not null
+			newImageUrls = new ArrayList<>(); //a new empty list is assigned to prevent NullPointerException
 		}
 
 		List<RoomImage> currentImages = room.getImages();
+		//newImageSet is a HashSet of the new image URLs
 		Set<String> newImageSet = new HashSet<>(newImageUrls);
 
 		// Find images to remove
@@ -108,14 +109,15 @@ public class RoomServiceImpl implements RoomService {
 		while (iterator.hasNext()) {
 			RoomImage existingImage = iterator.next();
 			if (!newImageSet.contains(existingImage.getImageUrl())) {
-				iterator.remove(); // Remove only if missing in new list
+				iterator.remove(); // If an image is not in the new image list, it gets removed
 			}
 		}
 
-		// Add new images that don't already exist
+		// Add new images
 		for (String newUrl : newImageUrls) {
+			//Checks if each new image already exists in currentImages
 			boolean exists = currentImages.stream().anyMatch(img -> img.getImageUrl().equals(newUrl));
-			if (!exists) {
+			if (!exists) { //If it doesn’t exist, a new RoomImage object is created and added to currentImages
 				RoomImage newImage = new RoomImage();
 				newImage.setImageUrl(newUrl);
 				newImage.setRoom(room);

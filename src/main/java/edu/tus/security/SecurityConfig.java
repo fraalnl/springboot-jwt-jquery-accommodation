@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
-@EnableMethodSecurity
+@Configuration  // Spring can process it during startup
+@EnableMethodSecurity // @PreAuthorize so you can control access on service methods
 public class SecurityConfig {
 
 	private final JwtUtil jwtUtil;
@@ -25,22 +25,26 @@ public class SecurityConfig {
 		this.jwtUserDetailsService = jwtUserDetailsService;
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+// provides a BCrypt-based encoder to hash passwords securely. When users log in, 
+// password will be compared with the stored (hashed) password.
+// Spring automatically injects this bean wherever a PasswordEncoder is required
+    @Bean
+    PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 		// Disable CSRF for simplicity in a REST API
 		.csrf(csrf -> csrf.disable())
-		// Use stateless session management
+		// Configures the application to be stateless. Instead of using server-side sessions, 
+		// each request is authenticated using the JWT token provided by the client.
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests(auth -> auth
 				// Permit access to static resources and authentication endpoints
@@ -55,13 +59,19 @@ public class SecurityConfig {
 						"/api/auth/**"
 						).permitAll()
 
-				// All other endpoints require authentication
+				// All other endpoints require authentication with a token
 				.anyRequest().authenticated()
 				)
-		.httpBasic(basic -> basic.disable())
+		.httpBasic(basic -> basic.disable()) //Disabling Default Login Mechanisms
 		.formLogin(form -> form.disable());
 
 		// Add custom JWT authentication filter before the default username/password filter
+		/*
+		 * if a valid JWT is present, the request is authenticated without triggering the default mechanism 
+		 * (which would otherwise look for username/password credentials). 
+		 * This integration allows your application to support token-based (stateless) authentication 
+		 * rather than relying solely on session-based or form-based methods
+		 */
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil, jwtUserDetailsService),
 				UsernamePasswordAuthenticationFilter.class);
 

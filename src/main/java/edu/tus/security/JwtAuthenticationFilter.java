@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+// processes incoming HTTP requests and validates JWT tokens. 
+// It extends OncePerRequestFilter, ensuring that the filter executes only once per request
+// even if the request is processed by multiple filters
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -24,33 +27,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    // processes every HTTP request before it reaches the controller
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
                                     throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+            String token = header.substring(7); //Extracts the token by removing the "Bearer " prefix
             if (jwtUtil.validateToken(token)) {
                 String username = jwtUtil.getUsernameFromToken(token);
-                // Load user details (or create a custom authentication object from token claims)
                 UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
                 
-                // You can also extract the role from the token if needed:
                 String role = jwtUtil.getRoleFromToken(token);
-                // Make sure role is set as expected, e.g., "ROLE_ADMIN"
                 
                 // Create the authentication token with the proper authority
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
-                                null,
+                                null, //No credentials are needed since authentication is based on the JWT
+                                //Authorities (Roles): Wraps the extracted role in SimpleGrantedAuthority
                                 Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
                         );
+                //Associates the authenticated user with the Spring Security Context
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        }
+        } //Passes the request down the filter chain so it reaches the intended controller
         filterChain.doFilter(request, response);
     }
 }
