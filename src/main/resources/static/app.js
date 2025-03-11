@@ -30,10 +30,18 @@ $(document).ready(function() {
 				}
 				loadRooms();
 			},
-			error: function(xhr) {
-				$("#loginError")
-					.removeClass("d-none")
-					.html('<strong>Error:</strong> ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Invalid credentials. Please try again.'));
+			error: function(xhr, status, error) {
+				let errorMessage = "Invalid credentials. Please try again.";
+				// Try to parse JSON error message if available
+				try {
+					const response = JSON.parse(xhr.responseText);
+					if (response.error) {
+						errorMessage = response.error;
+					}
+				} catch (e) {
+					// If not JSON, fallback to the default message.
+				}
+				$("#loginError").removeClass("d-none").html(errorMessage);
 			}
 		});
 	});
@@ -44,7 +52,7 @@ $(document).ready(function() {
 			method: "GET",
 			headers: { "Authorization": "Bearer " + token },
 			success: function(response) {
-				console.log("Rooms loaded:", response);
+				//console.log("Rooms loaded:", response);
 				populateRoomsTable(response); // Pass full response (including HATEOAS links)
 			},
 			error: function() {
@@ -132,6 +140,24 @@ $(document).ready(function() {
 		});
 	});
 
+	function showAlert(message, type) {
+		//console.log("showAlert triggered:", message); // Debug: Check if the function is called
+		const alertHTML = `
+	      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+	        ${message}
+	        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	    `;
+		$("#alertPlaceholder").html(alertHTML);
+
+		// Auto-dismiss the alert after 3 seconds.
+		setTimeout(() => {
+			$(".alert").alert('close');
+		}, 3000);
+	}
+
 	$("#addRoomBtn").on("click", function() {
 		$("#addRoomForm")[0].reset();
 		$("#addRoomModal").modal("show");
@@ -154,6 +180,7 @@ $(document).ready(function() {
 			addMessage: $("#roomAdditionalMessage").val(),
 			images: $("#roomImage").val().split(",").map(s => s.trim()).filter(s => s !== "")
 		};
+
 		$.ajax({
 			url: baseURL + "/api/accommodation/rooms",
 			method: "POST",
@@ -161,11 +188,18 @@ $(document).ready(function() {
 			headers: { "Authorization": "Bearer " + token },
 			data: JSON.stringify(roomData),
 			success: function() {
+				// Remove focus from any element inside the modal
+				$(document.activeElement).blur();
+				// Hide the modal
 				$("#addRoomModal").modal("hide");
-				loadRooms();
+				// Use a short timeout to ensure the modal is fully hidden before showing the alert.
+				setTimeout(function() {
+					loadRooms();
+					showAlert("Room added successfully!", "success");
+				}, 500);
 			},
 			error: function() {
-				alert("Failed to add room.");
+				showAlert("Failed to add room.", "danger");
 			}
 		});
 	});
@@ -201,7 +235,7 @@ $(document).ready(function() {
 				$("#updateRoomModal").modal("show");
 			},
 			error: function() {
-				alert("Failed to fetch room details.");
+				showAlert("Failed to fetch room details", "danger");
 			}
 		});
 	});
@@ -235,11 +269,15 @@ $(document).ready(function() {
 			headers: { "Authorization": "Bearer " + token },
 			data: JSON.stringify(roomData),
 			success: function() {
+				$(document.activeElement).blur();
 				$("#updateRoomModal").modal("hide");
-				loadRooms();
+				setTimeout(function() {
+					loadRooms();
+					showAlert("Room updated successfully!", "success");
+				}, 500);
 			},
 			error: function() {
-				alert("Failed to update room.");
+				showAlert("Failed to update room", "danger");
 			}
 		});
 	});
@@ -256,11 +294,15 @@ $(document).ready(function() {
 				method: "DELETE",
 				headers: { "Authorization": "Bearer " + token },
 				success: function() {
+					$(document.activeElement).blur();
 					$("#deleteRoomModal").modal("hide");
-					loadRooms();
+					setTimeout(function() {
+						loadRooms();
+						showAlert("Room deleted successfully!", "success");
+					}, 500);
 				},
 				error: function() {
-					alert("Failed to delete room.");
+					showAlert("Failed to delete room", "danger");
 				}
 			});
 		}
@@ -288,11 +330,14 @@ $(document).ready(function() {
 			headers: { "Authorization": "Bearer " + token },
 			data: JSON.stringify(studentData),
 			success: function(response) {
-				alert(response.message);
+				$(document.activeElement).blur();
 				$("#createStudentModal").modal("hide");
+				setTimeout(function() {
+					showAlert(response.message, "success");
+				}, 500);
 			},
 			error: function() {
-				alert("Failed to create student account.");
+				showAlert("Failed to create student account", "danger");
 			}
 		});
 	});
