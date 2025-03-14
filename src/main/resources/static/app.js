@@ -52,7 +52,6 @@ $(document).ready(function() {
 			method: "GET",
 			headers: { "Authorization": "Bearer " + token },
 			success: function(response) {
-				//console.log("Rooms loaded:", response);
 				populateRoomsTable(response); // Pass full response (including HATEOAS links)
 			},
 			error: function() {
@@ -141,7 +140,6 @@ $(document).ready(function() {
 	});
 
 	function showAlert(message, type) {
-		//console.log("showAlert triggered:", message); // Debug: Check if the function is called
 		const alertHTML = `
 	      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
 	        ${message}
@@ -190,7 +188,6 @@ $(document).ready(function() {
 			success: function() {
 				// Remove focus from any element inside the modal
 				$(document.activeElement).blur();
-				// Hide the modal
 				$("#addRoomModal").modal("hide");
 				// Use a short timeout to ensure the modal is fully hidden before showing the alert.
 				setTimeout(function() {

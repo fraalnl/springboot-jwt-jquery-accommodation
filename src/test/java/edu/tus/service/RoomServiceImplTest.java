@@ -18,7 +18,7 @@ import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT) // Allow lenient stubbing for the entire class
-public class RoomServiceImplTest {
+class RoomServiceImplTest {
 
     @Mock
     private RoomRepository roomRepository;
@@ -29,7 +29,7 @@ public class RoomServiceImplTest {
     private RoomDto sampleRoomDto;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         sampleRoomDto = new RoomDto();
         sampleRoomDto.setName("Test Room");
         sampleRoomDto.setEmail("test@example.com");
@@ -48,7 +48,7 @@ public class RoomServiceImplTest {
     }
 
     @Test
-    public void testAddRoom() {
+    void testAddRoom() {
         // When saving, assign an ID to the room.
         when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> {
             Room room = invocation.getArgument(0);
@@ -70,7 +70,7 @@ public class RoomServiceImplTest {
     }
 
     @Test
-    public void testGetRoomById_Found() {
+    void testGetRoomById_Found() {
         Room room = new Room();
         room.setId(1L);
         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
@@ -81,14 +81,14 @@ public class RoomServiceImplTest {
     }
 
     @Test
-    public void testGetRoomById_NotFound() {
+    void testGetRoomById_NotFound() {
         when(roomRepository.findById(99L)).thenReturn(Optional.empty());
         Optional<Room> result = roomService.getRoomById(99L);
         assertFalse(result.isPresent());
     }
 
     @Test
-    public void testDeleteRoom() {
+    void testDeleteRoom() {
         when(roomRepository.existsById(1L)).thenReturn(true);
         boolean deleted = roomService.deleteRoom(1L);
         assertTrue(deleted);
@@ -96,7 +96,7 @@ public class RoomServiceImplTest {
     }
 
     @Test
-    public void testUpdateRoom_PreserveImages() {
+    void testUpdateRoom_PreserveImages() {
         // Create an existing room with one image.
         Room room = new Room();
         room.setId(1L);

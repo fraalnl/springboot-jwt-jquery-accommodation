@@ -1,6 +1,6 @@
 package edu.tus.controller;
 
-import edu.tus.dto.LoginRequest;
+import edu.tus.dto.LoginRequestDto;
 import edu.tus.security.JwtUserDetailsService;
 import edu.tus.util.JwtUtil;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequest) {
         try {
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(loginRequest.getUsername());
             if (passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {

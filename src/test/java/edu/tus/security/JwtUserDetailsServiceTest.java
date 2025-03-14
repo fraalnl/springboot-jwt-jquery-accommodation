@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class JwtUserDetailsServiceTest {
+class JwtUserDetailsServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -27,7 +27,7 @@ public class JwtUserDetailsServiceTest {
     private StudentEntity sampleStudent;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // Setup a sample student entity.
         sampleStudent = new StudentEntity();
         sampleStudent.setUsername("student1");
@@ -39,7 +39,7 @@ public class JwtUserDetailsServiceTest {
     }
 
     @Test
-    public void testLoadUserByUsername_Admin() {
+    void testLoadUserByUsername_Admin() {
         // When the username is "admin", the service should return a User with ROLE_ADMIN.
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername("admin");
         assertNotNull(userDetails, "Admin user details should not be null");
@@ -50,7 +50,7 @@ public class JwtUserDetailsServiceTest {
     }
 
     @Test
-    public void testLoadUserByUsername_StudentFound() {
+    void testLoadUserByUsername_StudentFound() {
         // Stub the repository to return a sample student.
         when(userRepository.findByUsername("student1")).thenReturn(Optional.of(sampleStudent));
 
@@ -64,7 +64,7 @@ public class JwtUserDetailsServiceTest {
     }
 
     @Test
-    public void testLoadUserByUsername_StudentNotFound() {
+    void testLoadUserByUsername_StudentNotFound() {
         // Stub the repository to return empty.
         when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
 

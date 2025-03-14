@@ -23,7 +23,7 @@ public class AdminController {
 
     private final UserService userService;
     private final RoomService roomService;
-    private final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     public AdminController(final UserService userService, final RoomService roomService) {
         this.userService = userService;
@@ -68,8 +68,10 @@ public class AdminController {
                 // If the user is an ADMIN, add update & delete links
                 if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                         .stream().anyMatch(auth -> auth.getAuthority().equals(ROLE_ADMIN))) {
-                    resource.add(linkTo(methodOn(AdminController.class).updateRoom(room.getId(), new RoomDto())).withRel("update"));
-                    resource.add(linkTo(methodOn(AdminController.class).deleteRoom(room.getId())).withRel("delete"));
+                    resource.add(linkTo(methodOn(AdminController.class)
+                    		.updateRoom(room.getId(), new RoomDto())).withRel("update"));
+                    resource.add(linkTo(methodOn(AdminController.class)
+                    		.deleteRoom(room.getId())).withRel("delete"));
                 }
 
                 return resource;

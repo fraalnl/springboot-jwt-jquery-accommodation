@@ -38,16 +38,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AdminController.class)
 @Import({AdminControllerTest.TestConfig.class, AdminControllerTest.TestSecurityConfig.class})
-public class AdminControllerTest {
+class AdminControllerTest {
 
     @TestConfiguration
     static class TestConfig {
         @Bean
-        public UserService userService() {
+       UserService userService() {
             return mock(UserService.class);
         }
         @Bean
-        public RoomService roomService() {
+        RoomService roomService() {
             return mock(RoomService.class);
         }
     }
@@ -55,7 +55,7 @@ public class AdminControllerTest {
     @TestConfiguration
     static class TestSecurityConfig {
         @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             http
               // Disable CSRF for testing purposes
               .csrf(csrf -> csrf.disable())
@@ -64,7 +64,7 @@ public class AdminControllerTest {
             return http.build();
         }
         @Bean
-        public InMemoryUserDetailsManager userDetailsService() {
+        InMemoryUserDetailsManager userDetailsService() {
             UserDetails admin = User.withUsername("admin")
                 .password("{noop}admin123")
                 .roles("ADMIN")
@@ -103,7 +103,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testAddRoom() throws Exception {
+    void testAddRoom() throws Exception {
         RoomDto dto = new RoomDto();
         dto.setName("Test Room");
         dto.setEmail("test@room.com");
@@ -133,7 +133,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testGetRoomFound() throws Exception {
+    void testGetRoomFound() throws Exception {
         Room room = new Room();
         room.setId(1L);
         room.setName("Test Room");
@@ -147,7 +147,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testGetRoomNotFound() throws Exception {
+    void testGetRoomNotFound() throws Exception {
         when(roomService.getRoomById(99L)).thenReturn(Optional.empty());
         mockMvc.perform(get("/api/accommodation/rooms/99")
             .with(httpBasic("admin", "admin123")))
@@ -155,7 +155,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testListRooms() throws Exception {
+    void testListRooms() throws Exception {
         Room room1 = new Room();
         room1.setId(1L);
         room1.setName("Room One");
@@ -171,7 +171,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testUpdateRoomFound() throws Exception {
+    void testUpdateRoomFound() throws Exception {
         RoomDto dto = new RoomDto();
         dto.setName("Updated Room");
         dto.setEmail("update@room.com");
@@ -202,7 +202,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testDeleteRoomFound() throws Exception {
+    void testDeleteRoomFound() throws Exception {
         when(roomService.deleteRoom(1L)).thenReturn(true);
         mockMvc.perform(delete("/api/accommodation/rooms/1")
             .with(httpBasic("admin", "admin123")))
@@ -212,7 +212,7 @@ public class AdminControllerTest {
     }
     
     @Test
-    public void testDeleteRoomNotFound() throws Exception {
+    void testDeleteRoomNotFound() throws Exception {
         when(roomService.deleteRoom(99L)).thenReturn(false);
         mockMvc.perform(delete("/api/accommodation/rooms/99")
             .with(httpBasic("admin", "admin123")))
