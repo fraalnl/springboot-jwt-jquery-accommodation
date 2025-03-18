@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+// add a second comment to trigger webhook
 @RestController
 @RequestMapping("/api/accommodation")
 public class AdminController {
