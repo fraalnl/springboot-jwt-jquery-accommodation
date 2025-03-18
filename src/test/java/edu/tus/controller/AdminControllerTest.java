@@ -86,7 +86,7 @@ class AdminControllerTest {
     private RoomService roomService;
     
     @Test
-    public void testCreateStudent() throws Exception {
+    void testCreateStudent() throws Exception {
         StudentDto dto = new StudentDto();
         dto.setUsername("Test Student");
         dto.setEmail("test@student.com");
