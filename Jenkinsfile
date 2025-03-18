@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'  
-        SONARQUBE_TOKEN = credentials('network-testing-reports') // need update
-        SONAR_PROJECT_KEY = 'network-testing-reports'
+        SONARQUBE_TOKEN = credentials('accommodation-sonar-token') //configured in Jenkins
+        SONAR_PROJECT_KEY = 'accommodation-app' //configured in sonarqube
     }
 
     stages {       

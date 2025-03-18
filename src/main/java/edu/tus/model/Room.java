@@ -34,7 +34,9 @@ public class Room {
     @JsonManagedReference  //for lazy-loaded collections, JSON serialization
     private List<RoomImage> images = new ArrayList<>();
 
-    public Room() {}
+    public Room() {
+    	//default constructor needed to create a Room object
+    }    
 
     public long getId() {
         return id;

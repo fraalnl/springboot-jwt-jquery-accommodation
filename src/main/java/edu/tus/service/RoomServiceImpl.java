@@ -94,8 +94,9 @@ public class RoomServiceImpl implements RoomService {
 
 	//If an error occurs after some images are deleted but before new images are added, the room could end up missing some images.
 	//with @Transactional: all changes are rolled back, and the room's images remain unchanged
+	//private, the @Transactional annotation is useless because Spring's proxy mechanism cannot intercept private methods
 	@Transactional
-	private void updateRoomImages(Room room, List<String> newImageUrls) {
+	public void updateRoomImages(Room room, List<String> newImageUrls) {
 		if (newImageUrls == null) {
 			newImageUrls = new ArrayList<>(); //a new empty list is assigned to prevent NullPointerException
 		}

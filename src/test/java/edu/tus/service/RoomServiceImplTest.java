@@ -24,7 +24,7 @@ class RoomServiceImplTest {
     private RoomRepository roomRepository;
 
     @InjectMocks
-    private RoomServiceImpl roomService; // Explicitly use the concrete typ
+    private RoomServiceImpl roomService; // Explicitly use the concrete type
 
     private RoomDto sampleRoomDto;
 
